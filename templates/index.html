@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello World - Flask 一頁式網站</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #2d3748;
+        }
+
+        .container {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-4px);
+        }
+
+        .badge {
+            display: inline-block;
+            background: #ebf4ff;
+            color: #3182ce;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            color: #1a202c;
+            background: linear-gradient(90deg, #4f46e5, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            font-size: 1.1rem;
+            color: #718096;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .info-card {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px dashed #e2e8f0;
+            font-size: 0.95rem;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .label {
+            color: #718096;
+            font-weight: 500;
+        }
+
+        .value {
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            border: none;
+            padding: 12px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            opacity: 0.95;
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .interactive-msg {
+            margin-top: 15px;
+            font-size: 0.95rem;
+            color: #4a5568;
+            min-height: 24px;
+        }
+
+        footer {
+            margin-top: 30px;
+            font-size: 0.85rem;
+            color: #a0aec0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <span class="badge">🚀 Python Flask Web App</span>
+        <h1>Hello, World!</h1>
+        <p class="subtitle">歡迎來到你的第一個 Python Flask 一頁式網站！</p>
+
+        <div class="info-card">
+            <div class="info-row">
+                <span class="label">伺服器框架</span>
+                <span class="value">Flask 3.x</span>
+            </div>
+            <div class="info-row">
+                <span class="label">渲染引擎</span>
+                <span class="value">Jinja2 Template</span>
+            </div>
+            <div class="info-row">
+                <span class="label">伺服器當前時間</span>
+                <span class="value">{{ current_time }}</span>
+            </div>
+        </div>
+
+        <button class="btn" onclick="sayHello()">點擊打個招呼</button>
+        <div class="interactive-msg" id="greetingMessage"></div>
+
+        <footer>
+            AI 與數據分析課程 &bull; 練習專案
+        </footer>
+    </div>
+
+    <script>
+        let clickCount = 0;
+        function sayHello() {
+            clickCount++;
+            const msgEl = document.getElementById('greetingMessage');
+            const messages = [
+                '🎉 哈囉！很高興認識你！',
+                '✨ Flask 輕量且功能強大，非常適合 Web 開發！',
+                '🔥 這是第 ' + clickCount + ' 次點擊，繼續加油！'
+            ];
+            const msg = messages[(clickCount - 1) % messages.length];
+            msgEl.textContent = msg;
+        }
+    </script>
+</body>
+</html>
