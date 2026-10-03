@@ -1,0 +1,65 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  ci:
+    name: Continuous Integration (Lint & Test)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 檢出程式碼 (Checkout repository)
+        uses: actions/checkout@v4
+
+      - name: 設定 Python 環境 (Setup Python)
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: 安裝相依套件 (Install dependencies)
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 語法檢查 (Syntax Check)
+        run: |
+          python -m py_compile app.py
+
+      - name: 執行單元測試 (Run Pytest)
+        run: |
+          pytest -v
+
+  cd:
+    name: Continuous Deployment (Deploy to Render)
+    needs: ci
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 觸發 Render 自動部屬 (Trigger Render Deploy Hook)
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$RENDER_DEPLOY_HOOK_URL" ]; then
+            echo "⚠️ [提醒] 尚未在 GitHub Repository Secrets 中設定 'RENDER_DEPLOY_HOOK_URL'。"
+            echo "👉 請至 GitHub 儲存庫 -> Settings -> Secrets and variables -> Actions 新增此 Secret。"
+            echo "👉 若您在 Render 控制台已開啟 Auto-Deploy，Render 會在 push main 時自動進行部屬。"
+          else
+            echo "🚀 正在觸發 Render Deploy Hook..."
+            response=$(curl -s -w "\n%{http_code}" -X POST "$RENDER_DEPLOY_HOOK_URL")
+            http_code=$(echo "$response" | tail -n1)
+            body=$(echo "$response" | sed '$d')
+            echo "HTTP Status Code: $http_code"
+            if [ "$http_code" -ge 200 ] && [ "$http_code" -lt 300 ]; then
+              echo "✅ Render 部屬請求成功送出！"
+            else
+              echo "❌ 觸發部屬失敗，回應內容: $body"
+              exit 1
+            fi
+          fi
